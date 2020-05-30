@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Exploratory Data Analysis - Predicting Gross Written Premium and Broker Performance for FY2019</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Predicting Gross Written Premium and Broker Performance for FY2019</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem active">
+                                <a href="./" class="nav-link">Exploratory Data Analysis</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../Clustering/" class="nav-link">Clustering & PCA</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../Prediction/" class="nav-link">Building Models</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../Results.md" class="nav-link">Results</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href=".." class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../Clustering/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="2"><a href="#exploratory-data-analysis" class="nav-link">Exploratory Data Analysis</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#correlation-graphs" class="nav-link">Correlation Graphs</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#summary-statistics" class="nav-link">Summary Statistics</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="exploratory-data-analysis"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Exploratory Data Analysis</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">We can generate additional metrics to measure broker performance: "Hit Ratio", "Quote Ratio" &amp; "Success Ratio"
+Let's create a second data frame called “myBDFclean”. In this data frame variables pertaining to the years 2013 and 2014 need to be excluded. 
+Furthermore, this data frame can be used to generate additional features/ calculations to measure broker performance using the function “mutate”. 
+The new calculated fields include supplementary operational metrics such as, <br>
+<br><span style="font-family: Times New Roman; font-size: 1em;"><b>“Quote Ratio” for year x</b>: Quote count for the year x/ Submissions for the year x, 
+<br><b>“Hit Ratio” for year x</b>: Policy count for the year x/ Quote count for the year x
+<br><b>“Success Ratio” for years x....n</b>: sum(Policy count for year x...n)/ sum(Submissions for year x...n)</p>
+<p><span style="font-family: Times New Roman; font-size: 1em;">With respect to the broker segmentation task, we need to create a subset named; “myalchemySubset” from the data frame “myBDFClean”. This subset includes three years’ worth of data required for the clustering. 
+The variables chosen for part 1 of the project were, quote counts: 'QuoteCount' from 2016 to 2018, policy counts: 'PolicyCount' from 2016 to 2018, gross written premiums: GWP from 2016 to 2018 as well as the newly generated measure; success ratio (from 2016 to 2018).</p>
+<pre><code class="r"># To remove unnecessary columns before clustering creating new DF only for clustering
+myBDFclean &lt;- myBDF %&gt;%
+  mutate(quote_ratio2016 = QuoteCount_2016/ Submissions_2016,
+         quote_ratio2017 = QuoteCount_2017/ Submissions_2017,
+         quote_ratio2018 = QuoteCount_2018/ Submissions_2018,
+         hit_ratio16 = PolicyCount_2016/ QuoteCount_2016,
+         hit_ratio17 = PolicyCount_2017/ QuoteCount_2017,
+         hit_ratio18 = PolicyCount_2018/ QuoteCount_2018,
+         success_ratio16_18 = PolicyCount_2016+ PolicyCount_2017 + PolicyCount_2018/
+           Submissions_2016 + Submissions_2017 + Submissions_2018)  %&gt;%
+  select(-Submissions_2014, -QuoteCount_2013, -QuoteCount_2014, -AvgQuote_2013, -AvgQuote_2014)
+
+# Calculating NAs = 0
+sum(is.na(myBDFclean)) 
+</code></pre>
+
+<pre><code>## [1] 0
+</code></pre>
+<h2 id="correlation-graphs"><b><span style="font-family: Book Antiqua; font-size: 0.75em;">Correlation Graphs</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">To get a deeper insight into the data we can generate a series correlation graphs using the 'ggcorr' function of the 'Ggally' library</p>
+<pre><code class="r"># Plotting correlation plots with GWP (2016 to 2018) against all other variables
+ggcorr(myBDFclean)
+</code></pre>
+
+<p><img alt="" src="../Images/image1.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;,&quot;hit_ratio18&quot;, &quot;hit_ratio17&quot;, &quot;hit_ratio16&quot; ))
+</code></pre>
+
+<p><img alt="" src="../Images/image2.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;, &quot;quote_ratio2018&quot;, &quot;quote_ratio2017&quot;, &quot;quote_ratio2016&quot;))
+</code></pre>
+
+<p><img alt="" src="../Images/image3.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;, &quot;PolicyCount_2018&quot;, &quot;PolicyCount_2017&quot;, &quot;PolicyCount_2016&quot;))
+</code></pre>
+
+<p><img alt="" src="../Images/image4.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;, &quot;success_ratio16_18&quot;))
+</code></pre>
+
+<p><img alt="" src="../Images/image5.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;, &quot;QuoteCount_2018&quot;, &quot;QuoteCount_2017&quot;, &quot;QuoteCount_2016&quot;))
+</code></pre>
+
+<p><img alt="" src="../Images/image6.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;, &quot;Submissions_2018&quot;, &quot;Submissions_2017&quot;, &quot;Submissions_2016&quot;))
+</code></pre>
+
+<p><img alt="" src="../Images/image7.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;, &quot;AvgQuote_2018&quot;, &quot;AvgQuote_2017&quot;, &quot;AvgQuote_2016&quot;))
+</code></pre>
+
+<p><img alt="" src="../Images/image8.jpg" /><!-- --></p>
+<pre><code class="r">ggpairs(myBDFclean, columns = c(&quot;GWP_2018&quot;, &quot;GWP_2017&quot;, &quot;GWP_2016&quot;, &quot;AvgTIV_2018&quot;, &quot;AvgTIV_2017&quot;, &quot;AvgTIV_2016&quot;))
+</code></pre>
+
+<p><img alt="" src="../Images/image9.jpg" /><!-- --></p>
+<h2 id="summary-statistics"><b><span style="font-family: Book Antiqua; font-size: 0.75em;">Summary Statistics</b></h2>
+<pre><code class="r"># Based on correlation graphs creating a subset of all important variables for clustering
+
+myalchemySubset &lt;- (myBDFclean [, c(&quot;QuoteCount_2016&quot;, &quot;QuoteCount_2017&quot;, &quot;QuoteCount_2018&quot;, 
+                                    &quot;PolicyCount_2016&quot;, &quot;PolicyCount_2017&quot;, &quot;PolicyCount_2018&quot;,
+                                    &quot;GWP_2016&quot;, &quot;GWP_2017&quot;, &quot;GWP_2018&quot;, &quot;success_ratio16_18&quot;)])
+
+summary(myalchemySubset)
+</code></pre>
+
+<pre><code>##  QuoteCount_2016  QuoteCount_2017  QuoteCount_2018  PolicyCount_2016
+##  Min.   :   1.0   Min.   :   1.0   Min.   :   1.0   Min.   :  1.00  
+##  1st Qu.:  60.0   1st Qu.:  52.0   1st Qu.:  77.0   1st Qu.: 37.00  
+##  Median : 123.0   Median : 108.5   Median : 137.5   Median : 60.50  
+##  Mean   : 240.4   Mean   : 222.4   Mean   : 259.7   Mean   : 90.42  
+##  3rd Qu.: 221.5   3rd Qu.: 254.5   3rd Qu.: 252.5   3rd Qu.: 94.75  
+##  Max.   :2789.0   Max.   :2063.0   Max.   :4216.0   Max.   :482.00  
+##  PolicyCount_2017 PolicyCount_2018    GWP_2016           GWP_2017       
+##  Min.   : 15.0    Min.   :  6.00   Min.   :    4553   Min.   :  267093  
+##  1st Qu.: 43.0    1st Qu.: 41.00   1st Qu.:  473456   1st Qu.: 1155401  
+##  Median : 62.0    Median : 62.00   Median : 1476275   Median : 1698394  
+##  Mean   : 99.2    Mean   : 98.59   Mean   : 2275913   Mean   : 2715892  
+##  3rd Qu.:125.8    3rd Qu.:122.75   3rd Qu.: 2247211   3rd Qu.: 2700402  
+##  Max.   :466.0    Max.   :475.00   Max.   :14503932   Max.   :18815197  
+##     GWP_2018        success_ratio16_18
+##  Min.   :  230565   Min.   :  98.33   
+##  1st Qu.:  861229   1st Qu.: 334.37   
+##  Median : 1692199   Median : 528.36   
+##  Mean   : 2747650   Mean   : 836.94   
+##  3rd Qu.: 3140648   3rd Qu.:1042.60   
+##  Max.   :21032163   Max.   :4932.15
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
