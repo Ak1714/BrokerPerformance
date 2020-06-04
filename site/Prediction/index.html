@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Building Models - Predicting Gross Written Premium and Broker Performance for FY2019</title>
+        <title>Modelling - <b><font style="Times New Roman">Predicting Broker Performance for 2019</font></b></title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -23,7 +23,7 @@
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="..">Predicting Gross Written Premium and Broker Performance for FY2019</a>
+                <a class="navbar-brand" href=".."><b><font style="Times New Roman">Predicting Broker Performance for 2019</font></b></a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -37,13 +37,13 @@
                                 <a href=".." class="nav-link">Home</a>
                             </li>
                             <li class="navitem">
-                                <a href="../EDA/" class="nav-link">Exploratory Data Analysis</a>
+                                <a href="../EDA/" class="nav-link">Data Analysis</a>
                             </li>
                             <li class="navitem">
                                 <a href="../Clustering/" class="nav-link">Clustering & PCA</a>
                             </li>
                             <li class="navitem active">
-                                <a href="./" class="nav-link">Building Models</a>
+                                <a href="./" class="nav-link">Modelling</a>
                             </li>
                             <li class="navitem">
                                 <a href="../Results.md" class="nav-link">Results</a>
@@ -83,11 +83,66 @@
     
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="2"><a href="#gwp-2018-prediction" class="nav-link">GWP 2018 Prediction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#classification-trees" class="nav-link">Classification Trees</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#logistic-regression" class="nav-link">Logistic Regression</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#random-forest" class="nav-link">Random Forest</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#results-gwp-2019" class="nav-link">Results: GWP 2019</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#gwp-2019-prediction" class="nav-link">GWP 2019 Prediction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#classification-trees_1" class="nav-link">Classification Trees</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#logistic-regression_1" class="nav-link">Logistic Regression</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#results-gwp-2019_1" class="nav-link">Results: GWP 2019</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
         </ul>
     </div>
 </div></div>
                     <div class="col-md-9" role="main">
 
+<h2 id="gwp-2018-prediction"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">GWP 2018 Prediction</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">For prediction of Gross Written Premium for 2019 we need to first predict for 2018 to test our model accuracy. 
+Since we are primarily interested in determing whether GWP increases or decreases for the upcoming year for each broker, a new column called "Up_Down" can be created that compares GWP 2018 values to GWP 2017 and labels the values as "Up" if GWP for 2018 exceeds 2017 and "Down" if GWP for 2018 is lower than 2017.
+The response variable is a factor (character variable), we have to use machine learning algorithms such as classification trees, logistic regression, etc.
+The new dataframe: “myBroker_exp_DF” consists of all variables from 2015 to 2017. Variables from years 2013 and 2014 are excluded, and the new variable: "Up_Down" is added.</p>
 <pre><code class="r"># Prediction of GWP2018
 
 set.seed(12345)
@@ -95,6 +150,7 @@ set.seed(12345)
 Up_Down &lt;- character(length(myBDF$GWP_2018))
 Up_Down[myBDF$GWP_2017 &lt; myBDF$GWP_2018] &lt;- &quot;Up&quot;
 Up_Down[myBDF$GWP_2017 &gt;= myBDF$GWP_2018] &lt;- &quot;Down&quot;
+
 
 myBroker_exp_DF &lt;- myBDF %&gt;%
   dplyr::mutate(quote_ratio2015 = QuoteCount_2015/ Submissions_2015,
@@ -120,6 +176,7 @@ colnames(myBrokerDF) &lt;- c(&quot;Submissions_3&quot;,  &quot;Submissions_2&quo
                           &quot;AvgTIV1&quot;, &quot;QR3&quot;, &quot;QR2&quot;, &quot;QR1&quot;, &quot;HR3&quot;, &quot;HR2&quot;, &quot;HR1&quot;,&quot;SR&quot;,&quot;Up_Down&quot;)
 </code></pre>
 
+<p><span style="font-family: Times New Roman; font-size: 1em;">We then proceed to partition the dataset into test (20%) and training (80%) using the function “createDataPartition” (found in the "caret" package). </p>
 <pre><code class="r"># Partitioning into training and test, training = 80% as the dataset is small
 trainRows &lt;- createDataPartition(Up_Down, 
                                  p = 0.8, 
@@ -135,6 +192,11 @@ table(Up_Down)
 ## Down   Up 
 ##  106   82
 </code></pre>
+<h2 id="classification-trees"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Classification Trees</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">For the classification tree model, we use all variables in the training set to train the model. 
+To train the model, we use the train function and save the results in "“myRparttune”, apply the “rpart” method, and set the metric to “ROC” to ensure the selection of best model. 
+For tuning the model we need to include; tunelength = 10, default being 3, and split criteria set to “information gain”, default is Gini Index. 
+The train function provided the best model at complexity parameter = 0.07.</p>
 <pre><code class="r"># Rpart
 # increasing tune length &amp; split type as 'Entropy'
 
@@ -153,7 +215,7 @@ myRparttune &lt;- train(Up_Down ~ .,
 plot(myRparttune)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-11-1.png" /><!-- --></p>
+<p><img alt="" src="../Images/image22.jpg" /><!-- --></p>
 <pre><code class="r">myRparttune$results
 </code></pre>
 
@@ -227,7 +289,7 @@ plot(myRparttune$finalModel)
 text(myRparttune$finalModel, cex=.6)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-11-2.png" /><!-- --></p>
+<p><img alt="" src="../Images/image23.jpg" /><!-- --></p>
 <pre><code class="r">myRparttunepredtest &lt;- predict(myRparttune, newdata=BrokTestData18)
 (myRparttunedConfusion &lt;- table(BrokTestData18$Up_Down, myRparttunepredtest))
 </code></pre>
@@ -286,6 +348,13 @@ performance(myRparttunePred, &quot;auc&quot;)
 ## Slot "alpha.values":
 ## list()
 </code></pre>
+<p><span style="font-family: Times New Roman; font-size: 1em;">The misclassification rate for the classification tree model when validating on the test data set (myRparttunepredtest) was 24.32 %. The accuracy rate for the model was 75.68%. 
+The matrix represents a total of 13 observations correctly classified as “Up” and 15 observations correctly classified as “Down”. 
+<br>The misclassification rate for classification tree model when validated using the entire data set (myRparttunedpred) is 18.62 %. The accuracy rate for this model is 81.38%. The matrix shows a total of 68 observations correctly classified as “Up” and 85 observations correctly classified as “Down”.
+<br>The variables that appear to be important for predicting the outcome for the gross written premium prediction for 2018 are Policy Counts, Average Quote, and Average Total Insured Value. </p>
+<h2 id="logistic-regression"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Logistic Regression</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">The logistic regression model using the training dataset (BrokTrainData18): Weights are not assigned as there is “little” to “no” class imbalance (Up: 82, Dow: 106). 
+To train the model, we use the train function (and store results in “myLRtrain”), apply the “glm” method and set the metric to “ROC”. </p>
 <pre><code class="r"># Logistic regression
 #The tuneLength parameter is used to determine the total number of combinations that will be evaluated
 
@@ -411,6 +480,15 @@ performance(myLRPred, &quot;auc&quot;)
 ## Slot "alpha.values":
 ## list()
 </code></pre>
+<p><span style="font-family: Times New Roman; font-size: 1em;">The misclassification rate for the logistic regression model on the test set (myLRtraintest) is 24.32%. 
+<br>The accuracy rate for the model is 75.68%. The misclassification rate for the logistic regression model when validating the entire data set (myLRtrainpred) is 19.68%. 
+The accuracy rate for the model is 80.32%. The confusion matrix shows that 64 observations were correctly classified as “Up” and 87 correctly classified as “Down”. 
+<br>The features that were found to be most important for prediction are average quote counts for 2015, average total insured value for 2015 and 2017, hit ratio for 2015.</p>
+<h2 id="random-forest"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Random Forest</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">To train the model using Random Forest algorithm, the method specified as “rf”, the metric set to “ROC”, 
+and the number of trees set to 1500 (as overfitting is not a concern with Random Forest).<br />
+The response column “Up_Down” needs to be set to “factor” before proceeding. 
+We can evaluate our model first before tuning (with 500 trees) and then with 1500 trees.</p>
 <pre><code class="r"># Random Forest with cross validation &amp; tuning the no. of trees 
 # (as overfitting is not a concern with Random Forest)
 no_trees &lt;- 1500  # no. of trees
@@ -427,7 +505,7 @@ myRFtune &lt;- train(Up_Down ~ .,
 plot(myRFtune)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-13-1.png" /><!-- --></p>
+<p><img alt="" src="../Images/image24.jpg" /><!-- --></p>
 <pre><code class="r">myRFtune$results
 </code></pre>
 
@@ -484,12 +562,18 @@ plot(myRFtune)
 <pre><code class="r">plot(myRFtune)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-13-2.png" /><!-- --></p>
+<p><img alt="" src="../Images/image25.jpg" /><!-- --></p>
 <pre><code class="r">1-sum(diag(myRFtunedConfusion))/sum(myRFtunedConfusion)
 </code></pre>
 
 <pre><code>## [1] 0.05319149
 </code></pre>
+<p><span style="font-family: Times New Roman; font-size: 1em;">The misclassification rate for the random forest model when validating using the test set (myRFtunedpredtest) is 27.03%. 
+The accuracy rate for the model was 72.97%.<br />
+The misclassification rate for the random forest model when validating the entire data set (myLRtrainpred) is 5.31%. 
+The accuracy rate for the model was 94.69%. 
+<br>The OOB estimate error rate for random forest, with default 500 as number of trees was 30.46%. 
+The OOB estimate error rate for random forest, with default 1500 as number of trees was 27.81%</p>
 <pre><code class="r">myRFtunePredict &lt;- predict(myRFtune, newdata=myBrokerDF, type=&quot;prob&quot;)
 myRFtunePred &lt;- prediction(myRFtunePredict[,2], 
                            myBrokerDF$Up_Down,
@@ -504,7 +588,7 @@ plot(myRparttunePerf, col=3, add=TRUE)
 legend(0.7, 0.6, c(&quot;Random Forest&quot;, &quot;Log. Reg.&quot;, &quot;Class. Tree&quot;), col=1:3, lwd=3)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-13-3.png" /><!-- --></p>
+<p><img alt="" src="../Images/image26.jpg" /><!-- --></p>
 <pre><code class="r"># Calculating AUC for all models
 
 performance(myRparttunePred, &quot;auc&quot;)
@@ -579,11 +663,16 @@ performance(myRparttunePred, &quot;auc&quot;)
 ## Slot "alpha.values":
 ## list()
 </code></pre>
-<pre><code class="r">#------------------------------------------------------------------------------------------------
-
-# 2019
-
-
+<h2 id="results-gwp-2019"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Results: GWP 2019</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">Performance for the classification tree model, the logistic regression model and random forest model are 
+represented by the green (Class Tree), red (Log Reg) and the black (Random Forest) curves. 
+The AUC for the Classification Trees is 84.92, the AUC for the Logistic Regression is 91.12 and the AUC for Random Forest is 99.33</p>
+<h2 id="gwp-2019-prediction"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">GWP 2019 Prediction</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">For prediction of Gross Written Premium for 2019, we consider the two classification methods that yielded best results from the GWP 2018 prediction: classification trees and logistic regression. 
+The variable previously used for the Gross Written Premium prediction for 2018: “Up_Down”, can be used for the prediction of GWP 2019.
+Next steps: First, we edit the data frame “myBroker_exp_DF” to exclude all variables recorded for 2015. Second, all 2018 variables have to be included into the data frame (2016 to 2018) and third, the new data frame “myBrokerDF” needs to be rerun to refresh the new variables.
+Further on we will follow all the steps that were previously done using the classification tree and logistic regression method to determine the GWP 2018 prediction, to predict the Gross Written Premium prediction for 2019. </p>
+<pre><code class="r">
 myBroker_exp_DF &lt;- myBDF %&gt;%
   dplyr::mutate(quote_ratio2016 = QuoteCount_2016/ Submissions_2016,
                 quote_ratio2017 = QuoteCount_2017/ Submissions_2017,
@@ -620,6 +709,7 @@ table(Up_Down)
 ## Down   Up 
 ##  106   82
 </code></pre>
+<h2 id="classification-trees_1"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Classification Trees</b></h2>
 <pre><code class="r"># Rpart
 
 # tuning &amp; cross validation
@@ -638,7 +728,7 @@ myRparttune &lt;- train(Up_Down ~ .,
 plot(myRparttune)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-15-1.png" /><!-- --></p>
+<p><img alt="" src="../Images/image27.jpg" /><!-- --></p>
 <pre><code class="r">myRparttune$results
 </code></pre>
 
@@ -710,7 +800,7 @@ plot(myRparttune$finalModel)
 text(myRparttune$finalModel, cex=.6)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-15-2.png" /><!-- --></p>
+<p><img alt="" src="../Images/image28.jpg" /><!-- --></p>
 <pre><code class="r">myRparttunepredtest &lt;- predict(myRparttune, newdata=BrokTestData)
 (myRparttunedConfusion &lt;- table(BrokTestData$Up_Down, myRparttunepredtest))
 </code></pre>
@@ -771,6 +861,12 @@ performance(myRparttunePred, &quot;auc&quot;)
 ## Slot "alpha.values":
 ## list()
 </code></pre>
+<p><span style="font-family: Times New Roman; font-size: 1em;">The misclassification rate for the classification tree model when validating the test set (myRparttunepredtest) is 18.92 %. 
+The accuracy rate for the model was 81.08%. 
+<br>The misclassification rate for the classification tree model when validating entire data set (myRparttunedpred) is 15.43 %. 
+The accuracy rate for this model was 84.57%. 
+<br>The features that appear to be most important for predicting the outcome for the gross written premium prediction for 2019 are Gross Written Premium, Average Quote, and Average Total Insured Value.</p>
+<h2 id="logistic-regression_1"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Logistic Regression</b></h2>
 <pre><code class="r"># Logistic regression
 
 # Cross Validation
@@ -896,24 +992,40 @@ performance(myLRPred, &quot;auc&quot;)
 ## Slot "alpha.values":
 ## list()
 </code></pre>
+<p><span style="font-family: Times New Roman; font-size: 1em;">The misclassification rate for the logistic regression model when validating the test set (myLRtraintest) is 13.51%. 
+The accuracy rate for the model was 86.49%.
+<br>The misclassification rate for the logistic regression model when validating the entire data set (myLRtrainpred) is 2.65%. 
+The accuracy rate for the model was 97.35%.</p>
 <pre><code class="r">plot(myLRPerf, col=1)
 plot(myRparttunePerf, col=2, add=TRUE)
 legend(0.7, 0.6, c(&quot;Log. Reg.&quot;, &quot;Class. Tree&quot;), col=1:2, lwd=10)
 </code></pre>
 
-<p><img alt="" src="Images/unnamed-chunk-16-1.png" /><!-- --></p>
-<pre><code class="r"># CSV file
-
-# GWP2019 prediction
-
-BrokerPredictions_2019 &lt;- brokerData %&gt;%
-  dplyr::select(broker_name) %&gt;%
-  mutate(myRparttunepredprob, myRparttunedpred)
-
-colnames(BrokerPredictions_2019) &lt;- c(&quot;Broker_name&quot;, &quot;Predictions&quot;, &quot;Up_Down&quot;)
-
-write.csv(BrokerPredictions_2019, file = &quot;BrokerPred2019_final.csv&quot;)
-</code></pre></div>
+<p><img alt="" src="../Images/image29.jpg" /><!-- --></p>
+<h2 id="results-gwp-2019_1"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Results: GWP 2019</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">The performance for the logistic regression model and the classification tree model are represented by the red (Class Tree) and black (Log Reg) curves. 
+The AUC for the Class Tree is 87.51 and the AUC for the Log Reg is 99.11.</p>
+<h2 id="conclusion"><b><span style="font-family: Book Antiqua; font-size: 0.8em;">Conclusion</b></h2>
+<p><span style="font-family: Times New Roman; font-size: 1em;">To conclude with regards to the Broker Segmentation, task 1: the hierarchical and k-means clustering methods were performed and analyzed. Of the two methods, we preferred the k-means clustering approach. 
+Although both methods performed well during evaluation, the K-means clustering approach appeared to perform slightly better and provided better results. 
+The PCA scores and average silhouette coefficients obtained from this method presented better assignment of clusters overall.</p>
+<p><br><span style="font-family: Times New Roman; font-size: 1em;">With regards to Gross Written Premium Prediction, task 2: In comparison to the classification tree and logistic regression, the random forest method, appeared to perform better in the ROC curves. 
+The accuracy rate was 94.69% and misclassification rate 5.32%. 
+This method also provided the highest area under the curve (AUC) = 99%, and high rates for specificity (95%) and sensitivity (94%). 
+While this method seems to be the highest performer, we considered that the results were unrealistic or “too good to be true” and high performance could be attributed to data leakage or noise. 
+At times when a complex model, like random forest is used, in a small data set such as the one utilized in this case, the function does not have enough information to train on. 
+Hence, the the best approach for GWP 2018 prediction is the Logistic regression model. The predicted outcomes appeared more meaningful and useful for consideration, and the model seemed to provide more realistic results. 
+Performance results obtained from the model were satisfactory with low misclassification rate of 19.68% and elevated accuracy rate of 80.32%. 
+The AUC was 91.12%, sensitivity 78% and specificity 82%. 
+The features most important for prediction were average quote counts for 2015, average total insured value for 2015 and 2017, hit ratio for 2015.</p>
+<p><br><span style="font-family: Times New Roman; font-size: 1em;">To predict whether the gross premium will increase or decrease for 2019: the logistic regression model appeared to perform better in the ROC curve. 
+The accuracy rate for this model was 97.35% and the misclassification rate was 2.65%. 
+The AUC for this model was 99%, specificity was 98%. and sensitivity was 96.34 %. 
+Again, due to unrealistic performance results, we would prefer the other method. 
+Our recommendation for 2019 prediction has to be the classification tree model as it also provided high performance values. 
+The AUC for this model was 87.51%, specificity was 84% and sensitivity was 85.3%. 
+The misclassification rate obtained was 15.43% and the accuracy rate for this model was 84.57%. 
+The most important features for prediction appear to be GWP 2016, 2017, and 2018, policy counts 2016, 2017, and 2018, as well as the avg. quote for 2017 and 2018, and avg. TIV for 2017 and 2018.</p></div>
             </div>
         </div>
 

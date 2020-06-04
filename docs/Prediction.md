@@ -968,7 +968,7 @@ The AUC for the Class Tree is 87.51 and the AUC for the Log Reg is 99.11.
 Although both methods performed well during evaluation, the K-means clustering approach appeared to perform slightly better and provided better results. 
 The PCA scores and average silhouette coefficients obtained from this method presented better assignment of clusters overall.
 
-<br>With regards to Gross Written Premium Prediction, task 2: In comparison to the classification tree and logistic regression, the random forest method, appeared to perform better in the ROC curves. 
+<br><span style="font-family: Times New Roman; font-size: 1em;">With regards to Gross Written Premium Prediction, task 2: In comparison to the classification tree and logistic regression, the random forest method, appeared to perform better in the ROC curves. 
 The accuracy rate was 94.69% and misclassification rate 5.32%. 
 This method also provided the highest area under the curve (AUC) = 99%, and high rates for specificity (95%) and sensitivity (94%). 
 While this method seems to be the highest performer, we considered that the results were unrealistic or “too good to be true” and high performance could be attributed to data leakage or noise. 
@@ -978,7 +978,7 @@ Performance results obtained from the model were satisfactory with low misclassi
 The AUC was 91.12%, sensitivity 78% and specificity 82%. 
 The features most important for prediction were average quote counts for 2015, average total insured value for 2015 and 2017, hit ratio for 2015.
 
-<br>To predict whether the gross premium will increase or decrease for 2019: the logistic regression model appeared to perform better in the ROC curve. 
+<br><span style="font-family: Times New Roman; font-size: 1em;">To predict whether the gross premium will increase or decrease for 2019: the logistic regression model appeared to perform better in the ROC curve. 
 The accuracy rate for this model was 97.35% and the misclassification rate was 2.65%. 
 The AUC for this model was 99%, specificity was 98%. and sensitivity was 96.34 %. 
 Again, due to unrealistic performance results, we would prefer the other method. 

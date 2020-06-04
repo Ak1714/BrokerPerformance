@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="img/favicon.ico">
-        <title>Predicting Gross Written Premium and Broker Performance for FY2019</title>
+        <title><b><font style="Times New Roman">Predicting Broker Performance for 2019</font></b></title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/font-awesome.min.css" rel="stylesheet">
         <link href="css/base.css" rel="stylesheet">
@@ -23,7 +23,7 @@
     <body class="homepage">
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href=".">Predicting Gross Written Premium and Broker Performance for FY2019</a>
+                <a class="navbar-brand" href="."><b><font style="Times New Roman">Predicting Broker Performance for 2019</font></b></a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -37,13 +37,13 @@
                                 <a href="." class="nav-link">Home</a>
                             </li>
                             <li class="navitem">
-                                <a href="EDA/" class="nav-link">Exploratory Data Analysis</a>
+                                <a href="EDA/" class="nav-link">Data Analysis</a>
                             </li>
                             <li class="navitem">
                                 <a href="Clustering/" class="nav-link">Clustering & PCA</a>
                             </li>
                             <li class="navitem">
-                                <a href="Prediction/" class="nav-link">Building Models</a>
+                                <a href="Prediction/" class="nav-link">Modelling</a>
                             </li>
                             <li class="navitem">
                                 <a href="Results.md" class="nav-link">Results</a>
@@ -99,7 +99,7 @@
               </ul>
             </li>
             
-            <li class="nav-item" data-level="2"><a href="#loading-data-rda-file" class="nav-link">Loading data (.rda file)</a>
+            <li class="nav-item" data-level="2"><a href="#loading-data" class="nav-link">Loading data</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -145,7 +145,7 @@ library(GGally)
 set.seed(12345)
 </code></pre>
 
-<h2 id="loading-data-rda-file"><b><span style="font-family: Book Antiqua; font-size: 0.75em;">Loading data (.rda file)</b></h2>
+<h2 id="loading-data"><b><span style="font-family: Book Antiqua; font-size: 0.75em;">Loading data</b></h2>
 <p><span style="font-family: Times New Roman; font-size: 1em;">The data has 30 columns and a total of 189 rows. The .csv file was read using the “read.table” function and saved as .rda file. </p>
 <pre><code class="r">load(&quot;alchemyBrokerData.rda&quot;)
 </code></pre>
@@ -416,5 +416,5 @@ myBDF$GWP_2018[is.na(myBDF$GWP_2018)] &lt;-
 
 <!--
 MkDocs version : 1.1
-Build Date UTC : 2020-05-30 02:43:27
+Build Date UTC : 2020-06-04 22:43:08
 -->
