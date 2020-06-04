@@ -1,4 +1,4 @@
-site_name: <b><font style="Times New Roman">Predicting Broker Performance</font></b>
+site_name: Predicting Broker Performance</font></b>
 nav:
     - Home: 'index.md'
     - Data Analysis: 'EDA.md'
