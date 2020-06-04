@@ -1,9 +1,9 @@
-site_name: Predicting Gross Written Premium and Broker Performance for FY2019
+site_name: <b><font style="Times New Roman">Predicting Broker Performance for 2019</font></b>
 nav:
     - Home: 'index.md'
-    - Exploratory Data Analysis: 'EDA.md'
+    - Data Analysis: 'EDA.md'
     - Clustering & PCA: 'Clustering.md'
-    - Building Models: 'Prediction.md'
+    - Modelling: 'Prediction.md'
     - Results: 'Results.md'
     
 

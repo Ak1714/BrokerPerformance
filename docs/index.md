@@ -35,7 +35,7 @@ library(GGally)
 set.seed(12345)
 ```
 
-## <b><span style="font-family: Book Antiqua; font-size: 0.75em;">Loading data (.rda file)</b>
+## <b><span style="font-family: Book Antiqua; font-size: 0.75em;">Loading data</b>
 <span style="font-family: Times New Roman; font-size: 1em;">The data has 30 columns and a total of 189 rows. The .csv file was read using the “read.table” function and saved as .rda file. 
 
 
